@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 from PIL import Image
 import torch
 from torchvision import models, transforms
+from flask import send_from_directory
 
 app = Flask(__name__)
 
@@ -51,10 +52,15 @@ def classify():
         uploaded_file.save(image_path)
 
         result = classify_image(image_path)
+        uploaded_image_url = '/' + image_path
 
-        return render_template('index.html', result=result)
+        return render_template('index.html', result=result, uploaded_image_url=uploaded_image_url)
 
     return render_template('index.html', result=None)
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory('uploads', filename)
 
 if __name__ == '__main__':
     app.run(debug=True)
