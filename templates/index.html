@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Classification</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Plant Image Classification</h1>
@@ -13,13 +14,15 @@
         <br>
         <button type="submit">Classify Image</button>
     </form>
-    <br>
+    <div class = "wrapper">
+    <div classe = "image-container">
     {% if uploaded_image_url %}
     <h2>Uploaded Image:</h2>
     <img src="{{ uploaded_image_url }}" alt="Uploaded Image" style="max-width: 300px; max-height: 300px;">
     {% endif %}
+    </div>
 
-    <br>
+    <div class = "result-container">
     {% if result %}
         <h2>Result:</h2>
         <ul>
@@ -27,6 +30,9 @@
                 <li>{{ label }}: {{ confidence }}%</li>
             {% endfor %}
         </ul>
+      
     {% endif %}
+    </div>  
+    </div>
 </body>
 </html>
