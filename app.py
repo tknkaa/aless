@@ -6,10 +6,10 @@ from flask import send_from_directory
 
 app = Flask(__name__)
 
-PATH = "weights.pth"
+PATH = "weights_q.pth"
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-model = models.resnet50()
+model = models.resnet18()
 model.load_state_dict(torch.load(PATH, map_location=device))
 
 model = model.to(device)
@@ -35,7 +35,8 @@ def classify_image(img_path):
         output = model(img)
     probabilities = torch.nn.functional.softmax(output[0], dim=0)
     _, indices = torch.topk(probabilities, 4)
-    results = [(classes[idx], round(probabilities[idx].item() * 100, 2)) for idx in indices]
+    #results = [(classes[idx], round(probabilities[idx].item() * 100, 2)) for idx in indices]
+    results = [(idx, round(probabilities[idx].item() * 100, 2)) for idx in indices]
 
     return results
 
@@ -47,16 +48,13 @@ def index():
 def classify():
     uploaded_file = request.files['image']
 
-    if uploaded_file.filename != '':
-        image_path = 'uploads/' + uploaded_file.filename
-        uploaded_file.save(image_path)
+    image_path = 'uploads/' + uploaded_file.filename
+    uploaded_file.save(image_path)
 
-        result = classify_image(image_path)
-        uploaded_image_url = '/' + image_path
+    result = classify_image(image_path)
+    uploaded_image_url = '/' + image_path
 
-        return render_template('index.html', result=result, uploaded_image_url=uploaded_image_url)
-
-    return render_template('index.html', result=None)
+    return render_template('index.html', result=result, uploaded_image_url=uploaded_image_url)
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
