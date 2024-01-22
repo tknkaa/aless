@@ -6,7 +6,7 @@ from flask import send_from_directory
 
 app = Flask(__name__)
 
-PATH = "weights.pth"
+PATH = "weights_q.pth"
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 model = models.resnet18()
